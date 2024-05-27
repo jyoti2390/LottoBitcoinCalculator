@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotto and Bitcoin Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Lotto & Bitcoin Calculator</h1>
+        </header>
+        <div class="content">
+            <aside>
+                <h2>The Irish Lotto</h2>
+                <p>Since 16th April 1988, the Irish Lotto draw takes place every Saturday at 8pm. On 30th May 1990 an additional Wednesday evening draw was introduced.</p>
+                <p>What would EUR 100 in winnings invested on a draw date be worth in Euro now?</p>
+                <p>Enter a date and time in the form to get the next draw date and time, with the current value of your investment.</p>
+            </aside>
+            <main>
+                <form id="lottoForm">
+                    <label for="drawDate">Enter a Date and Time</label>
+                    <div class="form-group">
+                        <input type="datetime-local" id="drawDate" name="drawDate" required>
+                        <button type="submit">Submit</button>
+                    </div>
+                    <div id="error" class="error"></div>
+                </form>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DRAW DATE/TIME</th>
+                            <th>YOUR BITCOIN'S VALUE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTable">
+                        <!-- Results will be inserted here -->
+                    </tbody>
+                </table>
+            </main>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
