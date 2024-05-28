@@ -7,22 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Retrieve and parse the input date
         const inputDate = new Date(document.getElementById('drawDate').value);
         const currentDate = new Date();
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
-        const oneYearAhead = new Date();
-        oneYearAhead.setFullYear(currentDate.getFullYear() + 1);
         const errorDiv = document.getElementById('error');
         errorDiv.textContent = '';
 
         // Validate the input date
         if (!inputDate || isNaN(inputDate)) {
             errorDiv.textContent = 'Please enter a valid date and time.';
-            return;
-        }
-
-        // Validate the date range
-        if (inputDate < oneYearAgo || inputDate > oneYearAhead) {
-            errorDiv.textContent = 'Date must be within the past year or up to one year in the future.';
             return;
         }
 
@@ -39,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('resultsTable').appendChild(tableRow);
         } catch (error) {
             console.error("Error fetching Bitcoin data:", error);
-            alert(error.message);
+            errorDiv.textContent = error.message;
         }
     });
 
@@ -77,17 +67,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!historicalPriceResponse.ok) {
                     const responseText = await historicalPriceResponse.text();
                     console.error("Historical price response text:", responseText);
-                    throw new Error('Failed to fetch historical Bitcoin data');
+                    throw new Error('Failed to fetch historical Bitcoin data from CoinGecko. Please try again later.');
                 }
                 const historicalPriceData = await historicalPriceResponse.json();
                 console.log("Historical price data:", historicalPriceData);
                 if (!historicalPriceData.market_data || !historicalPriceData.market_data.current_price || !historicalPriceData.market_data.current_price.eur) {
-                    throw new Error('Invalid historical data structure');
+                    throw new Error('Invalid historical data structure received from CoinGecko.');
                 }
                 historicalPrice = historicalPriceData.market_data.current_price.eur;
             } catch (error) {
-                console.error("Error in calculateBitcoinInvestmentValue function:", error);
-                throw error;
+                console.error("Error in calculateBitcoinInvestmentValue function (historical):", error);
+                throw new Error('Date must be within the past year...');
             }
         } else {
             // If draw date is in the future, use the current price as historical price
@@ -100,12 +90,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!currentPriceResponse.ok) {
                 const responseText = await currentPriceResponse.text();
                 console.error("Current price response text:", responseText);
-                throw new Error('Failed to fetch current Bitcoin data');
+                throw new Error('Failed to fetch current Bitcoin data from CoinGecko. Please try again later.');
             }
             const currentPriceData = await currentPriceResponse.json();
             console.log("Current price data:", currentPriceData);
             if (!currentPriceData.bitcoin || !currentPriceData.bitcoin.eur) {
-                throw new Error('Invalid current data structure');
+                throw new Error('Invalid current data structure received from CoinGecko.');
             }
             const currentPrice = currentPriceData.bitcoin.eur;
 
@@ -113,12 +103,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (historicalPrice) {
                 return (100 / historicalPrice) * currentPrice;
             } else {
-                // Assume the investment is made today
-                return 100 * currentPrice / currentPrice;
+                // Use the current price as the value for future dates
+                return 100;
             }
         } catch (error) {
-            console.error("Error in calculateBitcoinInvestmentValue function:", error);
-            throw error;
+            console.error("Error in calculateBitcoinInvestmentValue function (current):", error);
+            throw new Error('An error occurred while fetching current Bitcoin data. Please try again later.');
         }
     }
 });
