@@ -1,3 +1,6 @@
+/*The programme shows the data of only past 365 days
+and for future dates it shows the current bitcoin value*/
+
 // Event listener for DOMContentLoaded to ensure the script runs after the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Event listener for form submission
@@ -77,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 historicalPrice = historicalPriceData.market_data.current_price.eur;
             } catch (error) {
                 console.error("Error in calculateBitcoinInvestmentValue function (historical):", error);
-                throw new Error('Date must be within the past year...');
+                throw new Error('Date must be within the past year..');
             }
         } else {
             // If draw date is in the future, use the current price as historical price
@@ -104,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return (100 / historicalPrice) * currentPrice;
             } else {
                 // Use the current price as the value for future dates
-                return 100;
+                return 100 * currentPrice / currentPrice;;
             }
         } catch (error) {
             console.error("Error in calculateBitcoinInvestmentValue function (current):", error);
